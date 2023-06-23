@@ -58,16 +58,16 @@ def fetch_and_save_data():
                     parameter = measurement_data['parameter']
                     if parameter == 'pm10':
                         pm10_value = measurement_data['value']
-                        pm10_last_updated = get_current_timestamp()
+                        pm10_last_updated = measurement_data['lastUpdated']
                     elif parameter == 'pm25':
                         pm25_value = measurement_data['value']
-                        pm25_last_updated = get_current_timestamp()
+                        pm25_last_updated = measurement_data['lastUpdated']
 
                 # Sprawdzenie, czy wartości nie są None i czy nie ma już takich danych w bazie
                 if (pm10_value is not None or pm25_value is not None) and not (pm10_value == '' and pm25_value == ''):
                     # Sprawdzenie, czy dane już istnieją w bazie
-                    query = "SELECT * FROM widok.pomiary_stare_api WHERE miasto = %s AND data_pm10 = %s AND data_pm25 = %s"
-                    cursor.execute(query, (location, pm10_last_updated, pm25_last_updated))
+                    query = "SELECT * FROM widok.pomiary_stare_api WHERE miasto = %s AND ((pm10::numeric = %s AND data_pm10 = %s) OR (pm25::numeric = %s AND data_pm25 = %s))"
+                    cursor.execute(query, (location, pm10_value, pm10_last_updated, pm25_value, pm25_last_updated))
                     existing_data = cursor.fetchone()
 
                     if existing_data is None:
@@ -75,6 +75,8 @@ def fetch_and_save_data():
                         query = "INSERT INTO widok.pomiary_stare_api(miasto, pm10, pm25, data_pm10, data_pm25) VALUES (%s, %s, %s, %s, %s)"
                         values = (location, pm10_value, pm25_value, pm10_last_updated, pm25_last_updated)
                         cursor.execute(query, values)
+                    else:
+                        print("Dane już istnieją w bazie:", location, pm10_value, pm25_value, pm10_last_updated, pm25_last_updated)
 
         # Zatwierdzenie zmian i zamknięcie połączenia z bazą danych
         conn.commit()
