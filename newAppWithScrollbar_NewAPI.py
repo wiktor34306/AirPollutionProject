@@ -1,8 +1,6 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
-from tkcalendar import Calendar
+from tkinter import ttk, scrolledtext
 import requests
-import datetime
 
 API_KEY = "05b1a42bda64f294587fd9a738864c30017b0173"
 
@@ -23,49 +21,33 @@ def get_quality_text(air_quality):
 
 def get_air_quality_data():
     city = entry.get()
-    start_date_str = start_date_entry.get_date()
-    end_date_str = end_date_entry.get_date()
-    parameters = []
-    if pm10_var.get():
-        parameters.append("pm10")
-    if pm25_var.get():
-        parameters.append("pm25")
-
-    if not city or not start_date_str or not end_date_str or not parameters:
-        messagebox.showerror("Błąd", "Wprowadź wszystkie wymagane dane.")
-        return
-
-    url = f"https://api.openaq.org/v2/measurements?date_from={start_date_str}&date_to={end_date_str}&limit=10000&page=1&offset=0&sort=desc&radius=10000&country_id=PL&city={city}&order_by=datetime"
+    url = f"https://api.waqi.info/feed/{city}/?token={API_KEY}"
 
     response = requests.get(url)
     data = response.json()
 
-    if 'results' in data:
-        measurements = data['results']
-        output_label.config(text=f"Aktualne zanieczyszczenie dla {city}: {len(measurements)} wyników")
+    if 'data' in data:
+        air_quality = data['data']['aqi']
+        parameters = data['data']['iaqi']
+        city_name = data["data"]["city"]["name"]
+
+        quality_text = get_quality_text(air_quality)
+
+        output_label.config(text=f"Aktualne zanieczyszczenie dla {city_name}: {air_quality} ({quality_text})")
 
         # Usunięcie poprzednich danych z tabelki
         treeview.delete(*treeview.get_children())
 
         # Dodanie danych do tabelki
-        for measurement in measurements:
-            parameter = measurement['parameter']
-            value = measurement['value']
-            date = measurement['date']['local']
-            date = datetime.datetime.strptime(date, '%Y-%m-%dT%H:%M:%S%z')
-            date = date.strftime('%Y-%m-%d %H:%M:%S')
-            location = measurement['location']
-            print(measurement)
-
-            if parameter in parameters:
-                treeview.insert("", "end", values=(date, location, parameter, value))
+        for param, value in parameters.items():
+            treeview.insert("", "end", values=(param, value['v']))
     else:
         output_label.config(text="Brak danych dla podanego miasta")
 
 def open_table_window():
     table_window = tk.Toplevel(window)
     table_window.title("Tabela z danymi")
-    table_window.geometry("600x300")
+    table_window.geometry("400x300")
 
     frame = tk.Frame(table_window)
     frame.pack(pady=10)
@@ -80,18 +62,25 @@ def open_table_window():
 
     scrollbar.config(command=table_treeview.yview)
 
-    table_treeview.insert("", "end", values=("Dobra", "0-50", ""))
-    table_treeview.insert("", "end", values=("Średnia", "50-100", ""))
-    table_treeview.insert("", "end", values=("Niezdrowa dla osób wrażliwych", "100-150", ""))
-    table_treeview.insert("", "end", values=("Niezdrowa", "150-200", ""))
-    table_treeview.insert("", "end", values=("Bardzo niezdrowa", "200-300", ""))
-    table_treeview.insert("", "end", values=("Zagrożenie dla życia", "300+", ""))
+    table_treeview.insert("", "end", values=("Dobra", "0-50: Dobra - Jakość powietrza jest uznawana za zadowalającą, a zanieczyszczenie powietrza stanowi niewielkie ryzyko lub jego brak."))
+    table_treeview.insert("", "end", values=("Średnia", "50-100: Średnia - Jakość powietrza jest dopuszczalna; jednak niektóre zanieczyszczenia mogą być umiarkowanie szkodliwe dla bardzo małej liczby osób, które są niezwykle wrażliwe na zanieczyszczenie powietrza."))
+    table_treeview.insert("", "end", values=("Niezdrowa dla osób wrażliwych", "100-150: Niezdrowe dla wrażliwych osób - u osób wrażliwych mogą wystąpić negatywne skutki dla zdrowia. Większość populacji może nie odczuwać negatywnych objawów."))
+    table_treeview.insert("", "end", values=("Niezdrowa", "150-200: Niezdrowe - Każdy może zacząć doświadczać negatywnych skutków zdrowotnych; U osób wrażliwych mogą wystąpić poważniejsze skutki zdrowotne."))
+    table_treeview.insert("", "end", values=("Bardzo niezdrowa", "200-300: Bardzo niezdrowe - Ostrzeżenie zdrowotne, poziom alarmowy. Bardzo prawdopodobny negatywny wpływ na całą populację."))
+    table_treeview.insert("", "end", values=("Zagrożenie dla życia", "300+: Niebezpieczny - Alarm Zdrowotny: każdy może doświadczyć poważniejszych skutków zdrowotnych."))
 
+    # Tworzenie widżetu ScrolledText
+    scrolled_text = scrolledtext.ScrolledText(table_window)
+    scrolled_text.pack(pady=10, fill=tk.BOTH, expand=True)
+
+    # Przypisanie zawartości tabeli do widżetu ScrolledText
+    table_text = "\n".join([f"{item['values'][0]}: {item['values'][1]}" for item in table_treeview.get_children()])
+    scrolled_text.insert(tk.END, table_text)
 
 # Tworzenie okna głównego
 window = tk.Tk()
 window.title("Aplikacja zanieczyszczenia powietrza")
-window.geometry("1000x800")
+window.geometry("600x400")
 
 label = tk.Label(window, text="Wpisz nazwę miasta:")
 label.pack(pady=10)
@@ -99,29 +88,8 @@ label.pack(pady=10)
 entry = tk.Entry(window)
 entry.pack(pady=5)
 
-start_date_label = tk.Label(window, text="Data początkowa:")
-start_date_label.pack(pady=5)
-
-start_date_entry = Calendar(window, date_pattern='yyyy-mm-dd')
-start_date_entry.pack(pady=5)
-
-end_date_label = tk.Label(window, text="Data końcowa:")
-end_date_label.pack(pady=5)
-
-end_date_entry = Calendar(window, date_pattern='yyyy-mm-dd')
-end_date_entry.pack(pady=5)
-
-pm10_var = tk.IntVar()
-pm25_var = tk.IntVar()
-
-pm10_checkbox = tk.Checkbutton(window, text="PM10", variable=pm10_var)
-pm10_checkbox.pack(pady=5)
-
-pm25_checkbox = tk.Checkbutton(window, text="PM2.5", variable=pm25_var)
-pm25_checkbox.pack(pady=5)
-
-submit_button = tk.Button(window, text="Sprawdź", command=get_air_quality_data)
-submit_button.pack(pady=10)
+button = tk.Button(window, text="Sprawdź", command=get_air_quality_data)
+button.pack(pady=5)
 
 output_label = tk.Label(window, text="")
 output_label.pack(pady=10)
@@ -129,19 +97,17 @@ output_label.pack(pady=10)
 frame = tk.Frame(window)
 frame.pack(pady=10)
 
-table_button = tk.Button(window, text="Tabela z podziałem wartości", command=open_table_window)
-table_button.pack(pady=10)
-
 scrollbar = tk.Scrollbar(frame)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-treeview = ttk.Treeview(frame, columns=("Data", "Miejsce", "Parametr", "Wartość"), show="headings", yscrollcommand=scrollbar.set)
-treeview.heading("Data", text="Data")
-treeview.heading("Miejsce", text="Miejsce")
+treeview = ttk.Treeview(frame, columns=("Parametr", "Wartość"), show="headings", yscrollcommand=scrollbar.set)
 treeview.heading("Parametr", text="Parametr")
 treeview.heading("Wartość", text="Wartość")
 treeview.pack()
 
 scrollbar.config(command=treeview.yview)
+
+open_table_button = tk.Button(window, text="Otwórz tabelę", command=open_table_window)
+open_table_button.pack(pady=5)
 
 window.mainloop()
