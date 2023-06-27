@@ -12,8 +12,16 @@ class AirQualityApp:
         self.result_tables = []
 
         # create a switch app button
-        self.switch_app_button = ttk.Button(self.master, text="Dane indeksu powietrza w przedziale czasowym", command=self.switch_app, style="Switch.TButton")
+        self.switch_app_button = ttk.Button(self.master, text="Dane indeksu powietrza w przedziale czasowym", command=self.switch_app, style="Switch.TButton", width="50")
         self.switch_app_button.pack(padx=5, pady=5)
+
+        # create a search label and entry box
+        self.search_label = ttk.Label(self.master, text="Po naciśnięcu przycisku pobierania danych do bazy, aplikacja nasłuchuje w tle. Żeby wykonać inne czynności, należy uruchomić aplikację na nowo", style="TGray.TLabel")
+        self.search_label.pack(padx=5, pady=5)
+
+        # create a switch to add to databae button
+        self.switch_app_database_button = ttk.Button(self.master, text="Pobierz dane do bazy danych", command=self.switch_app_database, style="Switch.TButton", width="50")
+        self.switch_app_database_button.pack(padx=5, pady=5)
 
         # create a search label and entry box
         self.search_label = ttk.Label(self.master, text="Podaj nazwę miejscowości:", style="TGray.TLabel")
@@ -112,6 +120,9 @@ class AirQualityApp:
         self.master.destroy()  # Zamknięcie okna aplikacji appWIthScrollbar.py
         import secondMainWindow  # Importowanie aplikacji newAppWithOldApi.py
 
+    def switch_app_database(self):
+        import NewAppGetToDatabaseWithOldAPI
+
 
 # create the GUI
 root = ThemedTk(theme="")
@@ -125,5 +136,5 @@ style.configure("Search.TButton", background="white")
 style.configure("TGray.TLabel", background="#747474", foreground="white")
 
 app = AirQualityApp(root)
-root.geometry("1200x500")
+root.geometry("1100x500")
 root.mainloop()
