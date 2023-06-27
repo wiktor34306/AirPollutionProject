@@ -5,7 +5,6 @@ import requests
 import datetime
 import subprocess
 
-
 API_KEY = "05b1a42bda64f294587fd9a738864c30017b0173"
 
 QUALITY_LEVELS = {
@@ -46,10 +45,8 @@ def get_air_quality_data():
         measurements = data['results']
         output_label.config(text=f"Aktualne zanieczyszczenie dla {city}: {len(measurements)} wyników")
 
-        # Usunięcie poprzednich danych z tabelki
         treeview.delete(*treeview.get_children())
 
-        # Dodanie danych do tabelki
         for measurement in measurements:
             parameter = measurement['parameter']
             value = measurement['value']
@@ -89,62 +86,77 @@ def open_table_window():
     table_treeview.insert("", "end", values=("Zagrożenie dla życia", "300+", ""))
 
 def go_back():
-    window.destroy()  # Zamknięcie okna aplikacji NewAppWithOldApiDateRange.py
-    subprocess.run(["python", "appWithScrollbar.py"])  # Uruchomienie aplikacji appWithScrollbar.py
+    window.destroy()
+    subprocess.run(["python", "mainWindow.py"])
 
-# Tworzenie okna głównego
 window = tk.Tk()
 window.title("Aplikacja zanieczyszczenia powietrza")
-window.geometry("1000x800")
+window.configure(bg="#747474") 
 
-back_button = tk.Button(window, text="Powrót", command=go_back)
-back_button.pack(pady=10)
+back_button = ttk.Button(window, text="Powrót", command=go_back)
+back_button.pack(pady=(30, 0))
 
-label = tk.Label(window, text="Wpisz nazwę miasta:")
+label = ttk.Label(window, text="Wpisz nazwę miasta:", style="White.TLabel", background="#747474")
 label.pack(pady=10)
 
-entry = tk.Entry(window)
+entry = ttk.Entry(window)
 entry.pack(pady=5)
 
-start_date_label = tk.Label(window, text="Data początkowa:")
+date_frame = tk.Frame(window, bg="#747474")  
+date_frame.pack(pady=10)
+
+start_date_frame = tk.Frame(date_frame, bg="#747474")  
+start_date_frame.pack(side=tk.LEFT, padx=10)
+
+start_date_label = ttk.Label(start_date_frame, text="Data początkowa", style="White.TLabel", background="#747474")
 start_date_label.pack(pady=5)
 
-start_date_entry = Calendar(window, date_pattern='yyyy-mm-dd')
+start_date_entry = Calendar(start_date_frame, date_pattern='yyyy-mm-dd', background="#747474")  
 start_date_entry.pack(pady=5)
 
-end_date_label = tk.Label(window, text="Data końcowa:")
+end_date_frame = tk.Frame(date_frame, bg="#747474")  
+end_date_frame.pack(side=tk.LEFT, padx=10)
+
+end_date_label = ttk.Label(end_date_frame, text="Data końcowa", style="White.TLabel", background="#747474")
 end_date_label.pack(pady=5)
 
-end_date_entry = Calendar(window, date_pattern='yyyy-mm-dd')
+end_date_entry = Calendar(end_date_frame, date_pattern='yyyy-mm-dd', background="#747474") 
 end_date_entry.pack(pady=5)
 
 pm10_var = tk.IntVar()
 pm25_var = tk.IntVar()
 
-pm10_checkbox = tk.Checkbutton(window, text="PM10", variable=pm10_var)
+style = ttk.Style()
+style.configure("Grey.TCheckbutton", background="#747474")
+style.configure("White.TCheckbutton", background="#747474", foreground="white")
+style.configure("White.TLabel", foreground="white")
+style.configure("White.TCheckbutton", foreground="white")
+
+pm10_checkbox = ttk.Checkbutton(window, text="PM10", variable=pm10_var, style="White.TCheckbutton")
 pm10_checkbox.pack(pady=5)
 
-pm25_checkbox = tk.Checkbutton(window, text="PM2.5", variable=pm25_var)
+pm25_checkbox = ttk.Checkbutton(window, text="PM2.5", variable=pm25_var, style="White.TCheckbutton")
 pm25_checkbox.pack(pady=5)
 
-submit_button = tk.Button(window, text="Sprawdź", command=get_air_quality_data)
+
+submit_button = ttk.Button(window, text="Sprawdź", command=get_air_quality_data)
 submit_button.pack(pady=10)
 
-output_label = tk.Label(window, text="")
+output_label = ttk.Label(window, text="", style="White.TLabel", background="#747474")
 output_label.pack(pady=10)
 
-frame = tk.Frame(window)
+frame = ttk.Frame(window)
 frame.pack(pady=10)
 
-table_button = tk.Button(window, text="Tabela z podziałem wartości", command=open_table_window)
+table_button = ttk.Button(window, text="Tabela z podziałem wartości", command=open_table_window)
 table_button.pack(pady=10)
 
 scrollbar = tk.Scrollbar(frame)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-treeview = ttk.Treeview(frame, columns=("Data", "Miejsce", "Parametr", "Wartość"), show="headings", yscrollcommand=scrollbar.set)
+treeview = ttk.Treeview(frame, columns=("Data", "Lokalizacja", "Parametr", "Wartość"), show="headings", yscrollcommand=scrollbar.set)
 treeview.heading("Data", text="Data")
-treeview.heading("Miejsce", text="Miejsce")
+treeview.heading("Lokalizacja", text="Lokalizacja")
 treeview.heading("Parametr", text="Parametr")
 treeview.heading("Wartość", text="Wartość")
 treeview.pack()
@@ -152,3 +164,4 @@ treeview.pack()
 scrollbar.config(command=treeview.yview)
 
 window.mainloop()
+
