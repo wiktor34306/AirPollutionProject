@@ -1,5 +1,6 @@
 import requests
 import psycopg2
+import matplotlib.pyplot as plt
 
 # Dane dostępowe do bazy danych
 DB_HOST = '195.150.230.208'
@@ -17,12 +18,83 @@ API_URL = "https://api.waqi.info/feed/{city}/?token={API_KEY}"
 # Miasta w Polsce, dla których chcesz pobrać dane
 cities = ["Warszawa", "Kraków", "Gdańsk", "Poznań", "Wrocław", "Lublin", "Łódź", "Gdynia", "Tarnów", "Szczecin", "Bydgoszcz", "Toruń", "Zamość", "Rzeszów", "Nowy Sącz", "Dębica", "Białystok", "Opole", "Przemyśl", "Bydgoszcz", "Gorzów Wielkopolski", "Katowice", "Zielona Góra"]
 
+# Tworzenie pustych list na dane do wykresów
+city_name_list = []
+co_list = []
+dew_list = []
+h_list = []
+no2_list = []
+o3_list = []
+p_list = []
+pm10_list = []
+pm25_list = []
+r_list = []
+so2_list = []
+t_list = []
+w_list = []
+
 try:
     # Przechodzenie przez każde miasto
     for city in cities:
         # Pobranie danych z API
         response = requests.get(API_URL.format(city=city, API_KEY=API_KEY))
         data = response.json()
+
+        # Wypełnienie list. Dane dla jednego miasta mają te same indeksy
+        try:
+            no_country = data['data']['city']['name'].split(', ')
+            city_name_list.append(', '.join(no_country[:-1]))
+            #city_name_list.append(data['data']['city']['name'].split(',')[-1])
+        except KeyError:
+            city_name_list.append(0)
+        try:
+            co_list.append(data['data']['iaqi']['co']['v'])
+        except KeyError:
+            co_list.append(0)
+        try:
+            dew_list.append(data['data']['iaqi']['dew']['v'])
+        except KeyError:
+            dew_list.append(0)
+        try:
+            h_list.append(data['data']['iaqi']['h']['v'])
+        except KeyError:
+            h_list.append(0)
+        try:
+            no2_list.append(data['data']['iaqi']['no2']['v'])
+        except KeyError:
+            no2_list.append(0)
+        try:
+            o3_list.append(data['data']['iaqi']['o3']['v'])
+        except KeyError:
+            o3_list.append(0)
+        try:
+            p_list.append(data['data']['iaqi']['p']['v'])
+        except KeyError:
+            p_list.append(0)
+        try:
+            pm10_list.append(data['data']['iaqi']['pm10']['v'])
+        except KeyError:
+            pm10_list.append(0)
+        try:
+            pm25_list.append(data['data']['iaqi']['pm25']['v'])
+        except KeyError:
+            pm25_list.append(0)
+        try:
+            r_list.append(data['data']['iaqi']['r']['v'])
+        except KeyError:
+            r_list.append(0)
+        try:
+            so2_list.append(data['data']['iaqi']['so2']['v'])
+        except KeyError:
+            so2_list.append(0)
+        try:
+            t_list.append(data['data']['iaqi']['t']['v'])
+        except KeyError:
+            t_list.append(0)
+        try:
+            w_list.append(data['data']['iaqi']['w']['v'])
+        except KeyError:
+            w_list.append(0)
 
         # Przetwarzanie danych i dodawanie do bazy danych
         city_name = data['data']['city']['name']
@@ -80,3 +152,13 @@ try:
 except (requests.RequestException, psycopg2.Error, ValueError) as error:
     print("Wystąpił błąd:", str(error))
 
+chart_data = [co_list, dew_list, h_list, no2_list, o3_list, p_list, pm10_list, pm25_list, r_list, so2_list, t_list,
+              w_list]
+param_name = ['co', 'dew', 'h', 'no2', 'o3', 'p', 'pm10', 'pm25', 'r', 'so2', 't', 'w']
+for i in range(len(chart_data)):
+    plt.bar(city_name_list, chart_data[i])
+    plt.xlabel('Miasto')
+    plt.xticks(rotation=45, fontsize=6)
+    plt.ylabel('Wartość')
+    plt.title(param_name[i])
+    plt.show()
