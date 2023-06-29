@@ -12,13 +12,13 @@ This app allows you to check the air quality in towns and cities in Poland.
 In the application, you can search for air quality data for a specific locality from the current time and for a specific date range.
 
 ##### Appearance of the application
-![alt text](\img\mainWindow.png)
-![alt text](\img\mainWindow1.png)
-![alt text](\img\mainWindow(Saving-data-to-database).png)
-![alt text](\img\secondWindow.png)
-![alt text](\img\secondWindow(with-data).png)
-![alt text](\img\secondWindow(table-with-value-breakdown).png)
-![alt text](\img\Box-plot.png)
-![alt text](\img\scatter-plot.png)
-![alt text](\img\histogram.png)
-![alt text](\img\linear-regression.png)
+![main window](/img/mainWindow.png)
+![main window](/img/mainWindow1.png)
+![main window saving data to database](/img/mainWindow(Saving-data-to-database).png)
+![second window](/img/secondWindow.png)
+![second window with data](/img/secondWindow(with-data).png)
+![secondWindow - table with value breakdown](/img/secondWindow(table-with-value-breakdown).png)
+![box plot](/img/Box-plot.png)
+![scatter plot](/img/scatter-plot.png)
+![histogram](/img/histogram.png)
+![linear regression](/img/linear-regression.png)
