@@ -4,6 +4,10 @@ from tkcalendar import Calendar
 import requests
 import datetime
 import subprocess
+import boxplotDiagram
+import scatterplotDiagram
+import histogramDiagram
+import linearRegressionDiagram
 
 API_KEY = "05b1a42bda64f294587fd9a738864c30017b0173"
 
@@ -85,6 +89,54 @@ def open_table_window():
     table_treeview.insert("", "end", values=("Bardzo niezdrowa", "200-300", ""))
     table_treeview.insert("", "end", values=("Zagrożenie dla życia", "300+", ""))
 
+def open_chart_1():
+    city = entry.get()
+    start_date = start_date_entry.get_date()
+    end_date = end_date_entry.get_date()
+    parameters = []
+    if pm10_var.get():
+        parameters.append("pm10")
+    if pm25_var.get():
+        parameters.append("pm25")
+
+    boxplotDiagram.generate_boxplot(city, start_date, end_date, parameters)
+
+def open_chart_2():
+    city = entry.get()
+    start_date = start_date_entry.get_date()
+    end_date = end_date_entry.get_date()
+    parameters = []
+    if pm10_var.get():
+        parameters.append("pm10")
+    if pm25_var.get():
+        parameters.append("pm25")
+
+    scatterplotDiagram.generate_scatterplot(city, start_date, end_date, parameters)
+
+def open_chart_3():
+    city = entry.get()
+    start_date = start_date_entry.get_date()
+    end_date = end_date_entry.get_date()
+    parameters = []
+    if pm10_var.get():
+        parameters.append("pm10")
+    if pm25_var.get():
+        parameters.append("pm25")
+
+    histogramDiagram.generate_histogram(city, start_date, end_date, parameters)
+
+def open_chart_4():
+    city = entry.get()
+    start_date = start_date_entry.get_date()
+    end_date = end_date_entry.get_date()
+    parameters = []
+    if pm10_var.get():
+        parameters.append("pm10")
+    if pm25_var.get():
+        parameters.append("pm25")
+
+    linearRegressionDiagram.generate_linear_regression(city, start_date, end_date, parameters)
+
 def go_back():
     window.destroy()
     subprocess.run(["python", "mainWindow.py"])
@@ -138,7 +190,6 @@ pm10_checkbox.pack(pady=5)
 pm25_checkbox = ttk.Checkbutton(window, text="PM2.5", variable=pm25_var, style="White.TCheckbutton")
 pm25_checkbox.pack(pady=5)
 
-
 submit_button = ttk.Button(window, text="Sprawdź", command=get_air_quality_data)
 submit_button.pack(pady=10)
 
@@ -150,6 +201,21 @@ frame.pack(pady=10)
 
 table_button = ttk.Button(window, text="Tabela z podziałem wartości", command=open_table_window)
 table_button.pack(pady=10)
+
+charts_frame = ttk.Frame(window,  style="Grey.TCheckbutton")
+charts_frame.pack(pady=10)
+
+chart1_button = ttk.Button(charts_frame, text="Wykres pudełkowy", command=open_chart_1, width=31)
+chart1_button.pack(side=tk.LEFT, padx=5)
+
+chart2_button = ttk.Button(charts_frame, text="Wykres punktowy", command=open_chart_2, width=31)
+chart2_button.pack(side=tk.LEFT, padx=5)
+
+chart3_button = ttk.Button(charts_frame, text="Histogram", command=open_chart_3, width=31)
+chart3_button.pack(side=tk.LEFT, padx=5)
+
+chart4_button = ttk.Button(charts_frame, text="Regresja liniowa", command=open_chart_4, width=31)
+chart4_button.pack(side=tk.LEFT, padx=5)
 
 scrollbar = tk.Scrollbar(frame)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -164,4 +230,3 @@ treeview.pack()
 scrollbar.config(command=treeview.yview)
 
 window.mainloop()
-
