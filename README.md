@@ -22,3 +22,6 @@ In the application, you can search for air quality data for a specific locality 
 ![scatter plot](/img/scatter-plot.png)
 ![histogram](/img/histogram.png)
 ![linear regression](/img/linear-regression.png)
+
+##### Video from application
+![video of the app](/movie/Instrukcja%20obs%C5%82ugi%20aplikacji%20-%20Zanieczyszczenie%20powietrza.mp4)
