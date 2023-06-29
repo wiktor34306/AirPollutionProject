@@ -24,4 +24,5 @@ In the application, you can search for air quality data for a specific locality 
 ![linear regression](/img/linear-regression.png)
 
 ##### Video from application
-![video of the app](/movie/Instrukcja%20obs%C5%82ugi%20aplikacji%20-%20Zanieczyszczenie%20powietrza.mp4)
+https://github.com/wiktor34306/AirPollutionProject/assets/92991883/121663a9-c164-494c-a004-3ba685be84cb
+
