@@ -3,9 +3,10 @@ from tkinter import messagebox
 import requests
 import mplcursors
 from datetime import datetime
+import statistics
 
 def generate_scatterplot(city, start_date, end_date, parameters):
-    data = {
+    data_scatterplot = {
         'city': city,
         'start_date': start_date,
         'end_date': end_date,
@@ -18,15 +19,15 @@ def generate_scatterplot(city, start_date, end_date, parameters):
     # Pobieranie danych z API
     url = f"https://api.openaq.org/v2/measurements?date_from={start_date}&date_to={end_date}&limit=10000&page=1&offset=0&sort=desc&radius=10000&country_id=PL&city={city}&order_by=datetime"
     response = requests.get(url)
-    data = response.json()
+    data_scatterplot = response.json()
 
     pm10_data = []
     pm25_data = []
     pm10_dates = []
     pm25_dates = []
 
-    if 'results' in data:
-        measurements = data['results']
+    if 'results' in data_scatterplot:
+        measurements = data_scatterplot['results']
         for measurement in measurements:
             parameter = measurement['parameter']
             value = measurement['value']
@@ -49,6 +50,16 @@ def generate_scatterplot(city, start_date, end_date, parameters):
     if "pm25" in parameters:
         pm25_scatter = ax.scatter(["PM2.5"] * len(pm25_data), pm25_data, c='blue', label="PM2.5")
         mplcursors.cursor([pm25_scatter]).connect("add", lambda sel: sel.annotation.set_text(f"Wartość: {sel.artist.get_offsets()[sel.target.index][1]}\nData: {format_date(pm25_dates[sel.target.index])}"))
+
+    if len(pm10_data) > 0:
+        pm10_mean = statistics.mean(pm10_data)
+        pm10_scatter = ax.scatter(["PM10"], [pm10_mean], c='green', label="Średnia PM10")
+        mplcursors.cursor(pm10_scatter).connect("add", lambda sel: sel.annotation.set_text(f"Średnia: {pm10_mean}"))
+    if len(pm25_data) > 0:
+        pm25_mean = statistics.mean(pm25_data)
+        pm25_scatter = ax.scatter(["PM2.5"], [pm25_mean], c='purple', label="Średnia PM2.5")
+        mplcursors.cursor(pm25_scatter).connect("add", lambda sel: sel.annotation.set_text(f"Średnia: {pm25_mean}"))
+
 
     ax.legend()
 

@@ -75,7 +75,8 @@ def open_table_window():
     scrollbar = tk.Scrollbar(frame)
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-    table_treeview = ttk.Treeview(frame, columns=("Parametr", "Wartość"), show="headings", yscrollcommand=scrollbar.set)
+    table_treeview = ttk.Treeview(frame, columns=("Parametr", "Wartość"), show="headings", 
+                                  yscrollcommand=scrollbar.set)
     table_treeview.heading("Parametr", text="Parametr")
     table_treeview.heading("Wartość", text="Wartość")
     table_treeview.pack()
@@ -220,7 +221,8 @@ chart4_button.pack(side=tk.LEFT, padx=5)
 scrollbar = tk.Scrollbar(frame)
 scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
-treeview = ttk.Treeview(frame, columns=("Data", "Lokalizacja", "Parametr", "Wartość"), show="headings", yscrollcommand=scrollbar.set)
+treeview = ttk.Treeview(frame, columns=("Data", "Lokalizacja", "Parametr", "Wartość"), 
+                        show="headings", yscrollcommand=scrollbar.set)
 treeview.heading("Data", text="Data")
 treeview.heading("Lokalizacja", text="Lokalizacja")
 treeview.heading("Parametr", text="Parametr")

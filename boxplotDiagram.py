@@ -3,7 +3,7 @@ from tkinter import messagebox
 import requests
 
 def generate_boxplot(city, start_date, end_date, parameters):
-    data = {
+    data_boxplot = {
         'city': city,
         'start_date': start_date,
         'end_date': end_date,
@@ -16,13 +16,13 @@ def generate_boxplot(city, start_date, end_date, parameters):
     # Pobieranie danych z API
     url = f"https://api.openaq.org/v2/measurements?date_from={start_date}&date_to={end_date}&limit=10000&page=1&offset=0&sort=desc&radius=10000&country_id=PL&city={city}&order_by=datetime"
     response = requests.get(url)
-    data = response.json()
+    data_boxplot = response.json()
 
     pm10_data = []
     pm25_data = []
 
-    if 'results' in data:
-        measurements = data['results']
+    if 'results' in data_boxplot:
+        measurements = data_boxplot['results']
         for measurement in measurements:
             parameter = measurement['parameter']
             value = measurement['value']
