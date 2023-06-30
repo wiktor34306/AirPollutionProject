@@ -42,6 +42,12 @@ def generate_linear_regression(city, start_date, end_date, parameters):
             model_pm10.fit(x_pm10, y_pm10)
             y_pred_pm10 = model_pm10.predict(x_pm10)
 
+            # Obliczanie odchylenia standardowego, współczynnika nachylenia, współczynnika przesunięcia i mediany
+            std_dev_pm10 = np.std(pm10_data)
+            slope_pm10 = model_pm10.coef_[0]
+            intercept_pm10 = model_pm10.intercept_
+            median_pm10 = np.median(pm10_data)
+
             fig_pm10, ax_pm10 = plt.subplots()
             ax_pm10.scatter(x_pm10, y_pm10, color='blue', label="Dane")
             ax_pm10.plot(x_pm10, y_pred_pm10, color='red', label="Regresja liniowa")
@@ -62,6 +68,10 @@ def generate_linear_regression(city, start_date, end_date, parameters):
                 )
             )
 
+            # Dodawanie informacji o odchyleniu standardowym, współczynniku nachylenia, współczynniku przesunięcia i medianie
+            info_text = f"Odchylenie standardowe: {std_dev_pm10:.2f}\nWspółczynnik nachylenia: {slope_pm10:.2f}\nWspółczynnik przesunięcia: {intercept_pm10:.2f}\nMediana: {median_pm10:.2f}"
+            ax_pm10.text(0.95, 0.95, info_text, transform=ax_pm10.transAxes, fontsize=10, verticalalignment='top', horizontalalignment='right')
+
             plt.show()
             plt.close(fig_pm10)
 
@@ -72,6 +82,12 @@ def generate_linear_regression(city, start_date, end_date, parameters):
             model_pm25 = LinearRegression()
             model_pm25.fit(x_pm25, y_pm25)
             y_pred_pm25 = model_pm25.predict(x_pm25)
+
+            # Obliczanie odchylenia standardowego, współczynnika nachylenia, współczynnika przesunięcia i mediany
+            std_dev_pm25 = np.std(pm25_data)
+            slope_pm25 = model_pm25.coef_[0]
+            intercept_pm25 = model_pm25.intercept_
+            median_pm25 = np.median(pm25_data)
 
             fig_pm25, ax_pm25 = plt.subplots()
             ax_pm25.scatter(x_pm25, y_pm25, color='blue', label="Dane")
@@ -86,6 +102,10 @@ def generate_linear_regression(city, start_date, end_date, parameters):
                     f"Wartość: {sel.artist.get_offsets()[sel.target.index][1]}\nData: {format_date(sel.target.index)}"
                 )
             )
+
+            # Dodawanie informacji o odchyleniu standardowym, współczynniku nachylenia, współczynniku przesunięcia i medianie
+            info_text = f"Odchylenie standardowe: {std_dev_pm25:.2f}\nWspółczynnik nachylenia: {slope_pm25:.2f}\nWspółczynnik przesunięcia: {intercept_pm25:.2f}\nMediana: {median_pm25:.2f}"
+            ax_pm25.text(0.95, 0.95, info_text, transform=ax_pm25.transAxes, fontsize=10, verticalalignment='top', horizontalalignment='right')
 
             plt.show()
             plt.close(fig_pm25)
