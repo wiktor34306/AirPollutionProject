@@ -4,6 +4,8 @@ import requests
 import mplcursors
 from datetime import datetime
 import statistics
+import numpy as np
+from scipy.stats import pearsonr
 
 def generate_scatterplot(city, start_date, end_date, parameters):
     data_scatterplot = {
@@ -60,6 +62,11 @@ def generate_scatterplot(city, start_date, end_date, parameters):
         pm25_scatter = ax.scatter(["PM2.5"], [pm25_mean], c='purple', label="Średnia PM2.5")
         mplcursors.cursor(pm25_scatter).connect("add", lambda sel: sel.annotation.set_text(f"Średnia: {pm25_mean}"))
 
+    # Obliczanie współczynnika korelacji Pearsona
+    if len(pm10_data) > 0 and len(pm25_data) > 0:
+        correlation_coefficient, _ = pearsonr(pm10_data, pm25_data)
+        correlation_text = f"Współczynnik korelacji Pearsona: {correlation_coefficient:.2f}"
+        ax.text(0.5, 0.02, correlation_text, transform=ax.transAxes, ha='center', fontsize=10)
 
     ax.legend()
 
