@@ -1,0 +1,13 @@
+Uruchomienie aplikacji do sprawdzania jakości powietrza w Polsce:
+1. Uruchomienie pliku mainWindow.py
+2. W zależności od tego co użytkownik chce sprawdzić.
+Użytkownik może:
+a) Sprawdzić najnowsze wartości zanieczyszczeń dla danej miejscowości - W oknie głównym użytkownik ma za zadanie wpisać interesującą go nazwę miejscowości i kliknąć przycisk "Szukaj". W oknie pojawi się tabela z danymi.
+b) Wywołać pobieranie aktualnych danych do bazy danych, (Aplikacja będzie działała w tle i gdy działa, dane do bazy pobierają się co godzinę) po kliknięciu w przycisk "Pobierz dane do bazy danych".
+c) Przejść do okna, w którym użytkownik może sprawdzić dane o zanieczyszczeniu powietrza dla miejscowości w wybranym przedziale czasowym - przycisk "Dane indeksu powietrza w przedziale czasowym".
+3. Gdy użytkownik jest w oknie z możliwością sprawdzenia danych w wybranym przedziale czasowym:
+- Użytkownik musi wprowadzić nazwę miejscowości, datę początkową oraz datę końcową interesującego użytkownika zakresu, wybór parametru (PM10 lub PM2.5 lub oba te parametry - zaznaczenie checkboxa).
+- gdy użytkownik chce wyświetlić dane dla tej miejscowości, zakresu dat oraz parametrów, musi kliknąć w przycisk "Sprawdź".
+- gdy użytkownik chce wyświetlić wykresy dla wybranych miejscowości, zakresu dat oraz parametrów, musi kliknąć w jeden z czterech przycisków: "Wykres pudełkowy", "Wykres punktowy", "Histogram", "Regresja liniowa". Po wciśnięciu jednego z tych przycisków użytkownikowi wyświetli się odpowiedni wykres z danymi.
+- Użytkownik może również sprawdzić tabelę z podziałem dopuszczalnych wartości, dla wybranych parametrów jakości powietrza - przycisk "Tabela z podziałem wartości".
+- Użytkownik ma możliwość także powrotu do pierwszego okna aplikacji - przycisk "Powrót".
