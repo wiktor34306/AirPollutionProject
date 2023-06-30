@@ -123,7 +123,7 @@ class AirQualityApp:
         import secondMainWindow  # Importowanie aplikacji newAppWithOldApi.py
 
     def switch_app_database(self):
-        import NewAppGetToDatabaseWithOldAPI
+        import getDataToDatabase
 
 
 # create the GUI
